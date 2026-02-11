@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine?</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff6f91, #ffb6c1);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.container {
+    text-align: center;
+    background: rgba(255,255,255,0.92);
+    padding: 25px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 360px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+
+h1 {
+    color: #e6005c;
+    font-size: 22px;
+}
+
+button {
+    padding: 12px 22px;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin: 8px;
+}
+
+#yesBtn {
+    background: #ff4d6d;
+    color: white;
+}
+
+#noBtn {
+    background: #999;
+    color: white;
+    position: absolute;
+}
+
+#gifContainer {
+    display: none;
+    margin-top: 15px;
+}
+
+#gifContainer img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+#loveText {
+    font-size: 16px;
+    color: #cc005f;
+    margin-top: 10px;
+    min-height: 60px;
+}
+
+#countdown {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #b30047;
+}
+
+.heart {
+    position: absolute;
+    font-size: 18px;
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh); opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    animation: fall 3s linear infinite;
+}
+
+@keyframes fall {
+    from { transform: translateY(-10vh); }
+    to { transform: translateY(100vh); }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+    <source src="romantic-music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" onclick="playMusic()">
+    <div id="countdown"></div>
+    <h1>💖 Disha, will you be my Valentine? 💖</h1>
+    <button id="yesBtn">YES 💘</button>
+    <button id="noBtn">NO 😜</button>
+
+    <div id="gifContainer">
+        <img src="dudu-bubu.gif">
+        <div id="loveText"></div>
+    </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const music = document.getElementById("music");
+const textBox = document.getElementById("loveText");
+
+function playMusic() {
+    music.play().catch(()=>{});
+}
+
+// NO button runs away
+function moveNo() {
+    noBtn.style.left = Math.random()*(window.innerWidth-100)+"px";
+    noBtn.style.top = Math.random()*(window.innerHeight-50)+"px";
+}
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
+
+// YES clicked
+yesBtn.addEventListener("click", () => {
+    document.getElementById("gifContainer").style.display = "block";
+    noBtn.style.display = "none";
+    startTyping();
+    confettiBoom();
+});
+
+// Typing effect
+const message = "I knew you'd say YES 💕\nYou just made my heart the happiest ❤️";
+let i = 0;
+function startTyping() {
+    if (i < message.length) {
+        textBox.innerHTML += message.charAt(i);
+        i++;
+        setTimeout(startTyping, 50);
+    }
+}
+
+// Floating hearts
+const hearts = ["❤️","💖","💗","💘","💜","💙","💚","🧡"];
+setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = hearts[Math.floor(Math.random()*hearts.length)];
+    h.style.left = Math.random()*100+"vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+},300);
+
+// Confetti
+function confettiBoom() {
+    for(let i=0;i<80;i++){
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random()*100+"vw";
+        c.style.background = `hsl(${Math.random()*360},100%,60%)`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),3000);
+    }
+}
+
+// Countdown to Feb 14
+function updateCountdown() {
+    const valentine = new Date(new Date().getFullYear(),1,14);
+    const now = new Date();
+    if (now > valentine) valentine.setFullYear(valentine.getFullYear()+1);
+    const diff = valentine - now;
+    const days = Math.floor(diff/(1000*60*60*24));
+    document.getElementById("countdown").innerHTML =
+        `⏳ ${days} days left for Valentine’s Day`;
+}
+updateCountdown();
+</script>
+
+</body>
+</html>
